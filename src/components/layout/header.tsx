@@ -26,7 +26,7 @@ export function Header() {
           <Link href="/" className="flex items-center gap-2 mr-6">
             <Logo className="h-8 w-8" />
             <span className="hidden font-bold sm:inline-block text-xl text-primary">
-              CoinWorth
+              Coin Worth Checker
             </span>
           </Link>
           <nav className="hidden md:flex items-center space-x-6 text-sm font-medium">

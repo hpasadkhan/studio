@@ -8,7 +8,7 @@ export function Footer() {
         <div className="flex flex-col items-center gap-4 px-8 md:flex-row md:gap-2 md:px-0">
           <Logo className="h-6 w-6" />
           <p className="text-center text-sm leading-loose text-muted-foreground md:text-left">
-            &copy; {new Date().getFullYear()} CoinWorth. All rights reserved.
+            &copy; {new Date().getFullYear()} Coin Worth Checker. All rights reserved.
           </p>
         </div>
         <nav className="flex gap-4 sm:gap-6">

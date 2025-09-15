@@ -6,7 +6,7 @@ import { Toaster } from '@/components/ui/toaster';
 import { cn } from '@/lib/utils';
 
 export const metadata: Metadata = {
-  title: 'CoinWorth | AI Coin Value Checker',
+  title: 'Coin Worth Checker | AI Coin Value Estimator',
   description: 'Instantly check the value of your coins with our free AI-powered tool.',
 };
 

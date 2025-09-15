@@ -131,7 +131,7 @@ export function CoinChecker() {
               <Button
                 type="submit"
                 size="lg"
-                className="w-full bg-accent hover:bg-accent/90"
+                className="w-full"
                 disabled={isLoading}
               >
                 {isLoading ? (

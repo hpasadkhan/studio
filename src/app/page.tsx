@@ -20,11 +20,11 @@ export default function Home() {
                 <p className="max-w-[600px] text-foreground/80 md:text-xl">
                   Our AI-powered tool provides instant, free, and accurate value
                   estimations for your coins. Just enter the details and
-                  discover your treasure&apos;s worth.
+                  discover your treasure's worth.
                 </p>
               </div>
               <div className="flex flex-col gap-2 min-[400px]:flex-row">
-                <Button asChild size="lg" className="bg-accent hover:bg-accent/90">
+                <Button asChild size="lg">
                   <Link href="#checker">Start Checking</Link>
                 </Button>
               </div>
