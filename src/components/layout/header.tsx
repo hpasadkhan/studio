@@ -6,21 +6,100 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
+  DropdownMenuLabel,
 } from '@/components/ui/dropdown-menu';
 import { ChevronDown } from 'lucide-react';
-import { Button } from '../ui/button';
 import React from 'react';
 
-export function Header() {
+const NavDropdown = ({
+  label,
+  subItems,
+  baseType,
+}: {
+  label: string;
+  baseType: string;
+  subItems: { label: string; query: string }[];
+}) => {
   const [open, setOpen] = React.useState(false);
-  const coinTypes = [
-    'Penny',
-    'Nickel',
-    'Dime',
-    'Quarter',
-    'Half Dollar',
-    'Dollar',
-  ];
+  return (
+    <DropdownMenu open={open} onOpenChange={setOpen}>
+      <DropdownMenuTrigger
+        onMouseEnter={() => setOpen(true)}
+        className="flex items-center gap-1 text-foreground/80 transition-colors hover:text-primary focus:outline-none"
+      >
+        {label}
+        <ChevronDown className="h-4 w-4" />
+      </DropdownMenuTrigger>
+      <DropdownMenuContent onMouseLeave={() => setOpen(false)} className="w-56">
+        <DropdownMenuLabel>Most Valuable</DropdownMenuLabel>
+        {subItems.map((item) => (
+          <DropdownMenuItem key={item.label} asChild>
+            <Link href={`/#checker?type=${encodeURIComponent(item.query)}`}>
+              {item.label}
+            </Link>
+          </DropdownMenuItem>
+        ))}
+        <DropdownMenuSeparator />
+        <DropdownMenuItem asChild>
+           <Link href={`/#checker?type=${encodeURIComponent(baseType)}`}>Complete List</Link>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+};
+
+export function Header() {
+  const coinTypes = {
+    Penny: {
+      baseType: 'Penny',
+      subItems: [
+        { label: 'Lincoln Penny', query: 'Lincoln Penny' },
+        { label: 'Indian Head Penny', query: 'Indian Head Penny' },
+        { label: 'Flying Eagle Penny', query: 'Flying Eagle Penny' },
+      ],
+    },
+    Nickel: {
+      baseType: 'Nickel',
+      subItems: [
+        { label: 'Jefferson Nickel', query: 'Jefferson Nickel' },
+        { label: 'Buffalo Nickel', query: 'Buffalo Nickel' },
+        { label: 'Liberty Head V Nickel', query: 'Liberty Head V Nickel' },
+      ],
+    },
+    Dime: {
+      baseType: 'Dime',
+      subItems: [
+        { label: 'Roosevelt Dime', query: 'Roosevelt Dime' },
+        { label: 'Mercury Dime', query: 'Mercury Dime' },
+        { label: 'Barber Dime', query: 'Barber Dime' },
+      ],
+    },
+    Quarter: {
+      baseType: 'Quarter',
+      subItems: [
+        { label: 'Washington Quarter', query: 'Washington Quarter' },
+        { label: 'Standing Liberty Quarter', query: 'Standing Liberty Quarter' },
+        { label: 'Barber Quarter', query: 'Barber Quarter' },
+      ],
+    },
+    'Half Dollar': {
+      baseType: 'Half Dollar',
+      subItems: [
+        { label: 'Kennedy Half Dollar', query: 'Kennedy Half Dollar' },
+        { label: 'Franklin Half Dollar', query: 'Franklin Half Dollar' },
+        { label: 'Walking Liberty Half Dollar', query: 'Walking Liberty Half Dollar' },
+      ],
+    },
+    Dollar: {
+      baseType: 'Dollar',
+      subItems: [
+        { label: 'Eisenhower Dollar', query: 'Eisenhower Dollar' },
+        { label: 'Peace Dollar', query: 'Peace Dollar' },
+        { label: 'Morgan Dollar', query: 'Morgan Dollar' },
+      ],
+    },
+  };
 
   return (
     <header className="bg-background/80 sticky top-0 z-50 w-full border-b border-border/40 backdrop-blur-lg">
@@ -33,28 +112,18 @@ export function Header() {
             </span>
           </Link>
           <nav className="hidden md:flex items-center space-x-6 text-sm font-medium">
-            <Link
-              href="/"
-              className="text-foreground/80 transition-colors hover:text-primary"
-            >
-              Home
-            </Link>
-            <DropdownMenu open={open} onOpenChange={setOpen}>
-              <DropdownMenuTrigger
-                onMouseEnter={() => setOpen(true)}
-                className="flex items-center gap-1 text-foreground/80 transition-colors hover:text-primary focus:outline-none"
-              >
-                Coin Types
-                <ChevronDown className="h-4 w-4" />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent onMouseLeave={() => setOpen(false)}>
-                {coinTypes.map((type) => (
-                  <DropdownMenuItem key={type} asChild>
-                    <Link href={`/#checker?type=${encodeURIComponent(type)}`}>{type}</Link>
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
+            {Object.entries(coinTypes).map(([label, { baseType, subItems }]) => (
+              <NavDropdown
+                key={label}
+                label={label}
+                baseType={baseType}
+                subItems={subItems}
+              />
+            ))}
+          </nav>
+        </div>
+        <div className="flex flex-1 items-center justify-end space-x-4">
+          <nav className="hidden md:flex items-center space-x-6 text-sm font-medium">
             <Link
               href="/#about"
               className="text-foreground/80 transition-colors hover:text-primary"
@@ -68,11 +137,6 @@ export function Header() {
               Contact
             </Link>
           </nav>
-        </div>
-        <div className="flex flex-1 items-center justify-end">
-            <Button asChild>
-                <Link href="#checker">Get Started</Link>
-            </Button>
         </div>
       </div>
     </header>

@@ -15,12 +15,10 @@ export default function Home() {
             <div className="flex flex-col justify-center space-y-4">
               <div className="space-y-4">
                 <h1 className="text-4xl font-bold tracking-tighter text-primary sm:text-5xl md:text-6xl xl:text-7xl">
-                  Unlock the Hidden Value of Your Coins
+                  Got Coins? Find Their Worth.
                 </h1>
                 <p className="max-w-[600px] text-foreground/80 md:text-xl">
-                  Our AI-powered tool provides instant, free, and accurate value
-                  estimations for your coins. Just enter the details and
-                  discover your treasure's worth.
+                  Instantly discover the value of your coins with our free AI-powered checker. It's fast, easy, and accurate.
                 </p>
               </div>
               <div className="flex flex-col gap-2 min-[400px]:flex-row">
