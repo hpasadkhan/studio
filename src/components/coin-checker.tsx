@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -31,6 +31,7 @@ import { Input } from '@/components/ui/input';
 import { Loader2, Sparkles } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { useSearchParams } from 'next/navigation';
 
 const FormSchema = z.object({
   type: z
@@ -53,6 +54,9 @@ export function CoinChecker() {
   const [result, setResult] = useState<EstimateCoinValueOutput | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const searchParams = useSearchParams();
+  const coinTypeFromQuery = searchParams.get('type') || '';
+
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -61,6 +65,12 @@ export function CoinChecker() {
       year: '',
     },
   });
+
+  useEffect(() => {
+    if (coinTypeFromQuery) {
+      form.setValue('type', coinTypeFromQuery);
+    }
+  }, [coinTypeFromQuery, form]);
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     setIsLoading(true);

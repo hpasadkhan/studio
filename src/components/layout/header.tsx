@@ -1,3 +1,4 @@
+'use client';
 import Link from 'next/link';
 import { Logo } from '@/components/logo';
 import {
@@ -8,8 +9,10 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { ChevronDown } from 'lucide-react';
 import { Button } from '../ui/button';
+import React from 'react';
 
 export function Header() {
+  const [open, setOpen] = React.useState(false);
   const coinTypes = [
     'Penny',
     'Nickel',
@@ -36,27 +39,30 @@ export function Header() {
             >
               Home
             </Link>
-            <DropdownMenu>
-              <DropdownMenuTrigger className="flex items-center gap-1 text-foreground/80 transition-colors hover:text-primary focus:outline-none">
+            <DropdownMenu open={open} onOpenChange={setOpen}>
+              <DropdownMenuTrigger
+                onMouseEnter={() => setOpen(true)}
+                className="flex items-center gap-1 text-foreground/80 transition-colors hover:text-primary focus:outline-none"
+              >
                 Coin Types
                 <ChevronDown className="h-4 w-4" />
               </DropdownMenuTrigger>
-              <DropdownMenuContent>
+              <DropdownMenuContent onMouseLeave={() => setOpen(false)}>
                 {coinTypes.map((type) => (
                   <DropdownMenuItem key={type} asChild>
-                    <Link href="#">{type}</Link>
+                    <Link href={`/#checker?type=${encodeURIComponent(type)}`}>{type}</Link>
                   </DropdownMenuItem>
                 ))}
               </DropdownMenuContent>
             </DropdownMenu>
             <Link
-              href="#"
+              href="/#about"
               className="text-foreground/80 transition-colors hover:text-primary"
             >
               About
             </Link>
             <Link
-              href="#"
+              href="mailto:hpasadkhan@gmail.com"
               className="text-foreground/80 transition-colors hover:text-primary"
             >
               Contact
