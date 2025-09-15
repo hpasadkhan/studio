@@ -28,15 +28,9 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import { Loader2, Sparkles } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
 const FormSchema = z.object({
   type: z
@@ -53,9 +47,6 @@ const FormSchema = z.object({
         message: 'Please enter a valid year.',
       }
     ),
-  condition: z.enum(['Mint', 'Very Fine', 'Fine', 'Good', 'Poor'], {
-    required_error: 'You need to select a coin condition.',
-  }),
 });
 
 export function CoinChecker() {
@@ -97,7 +88,7 @@ export function CoinChecker() {
         <CardHeader className="text-center">
           <CardTitle className="flex items-center justify-center gap-2 text-3xl font-bold">
             <Sparkles className="h-8 w-8 text-accent" />
-            Check Your Coin&apos;s Value
+            Check Your Coin's Value
           </CardTitle>
           <CardDescription>
             Enter the details of your coin to get an AI-powered value
@@ -135,33 +126,6 @@ export function CoinChecker() {
                   )}
                 />
               </div>
-              <FormField
-                control={form.control}
-                name="condition"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Condition</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select a condition" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="Mint">Mint</SelectItem>
-                        <SelectItem value="Very Fine">Very Fine</SelectItem>
-                        <SelectItem value="Fine">Fine</SelectItem>
-                        <SelectItem value="Good">Good</SelectItem>
-                        <SelectItem value="Poor">Poor</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
             </CardContent>
             <CardFooter>
               <Button
@@ -184,20 +148,35 @@ export function CoinChecker() {
         </Form>
       </Card>
 
-      {result && (
+      {result && result.coins && (
         <Card className="mt-8 animate-fade-in-up">
           <CardHeader>
             <CardTitle>Estimation Result</CardTitle>
+            <CardDescription className="flex justify-between items-center">
+              <span>Here are the estimated values for the coins found.</span>
+              <div className="flex items-center gap-2">
+                <p className="text-sm text-muted-foreground">Confidence:</p>
+                <p className="text-sm font-medium">{result.confidence}</p>
+              </div>
+            </CardDescription>
           </CardHeader>
-          <CardContent className="grid gap-4 text-center">
-            <p className="text-muted-foreground">Estimated Value</p>
-            <p className="text-5xl font-bold text-primary">
-              {result.estimatedValue}
-            </p>
-            <div className="flex justify-center items-center gap-2">
-              <p className="text-sm text-muted-foreground">Confidence:</p>
-              <p className="text-sm font-medium">{result.confidence}</p>
-            </div>
+          <CardContent className="grid gap-4">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Description</TableHead>
+                  <TableHead className="text-right">Estimated Value</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {result.coins.map((coin, index) => (
+                  <TableRow key={index}>
+                    <TableCell>{coin.description}</TableCell>
+                    <TableCell className="text-right font-medium">{coin.estimatedValue}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
           </CardContent>
         </Card>
       )}

@@ -14,13 +14,17 @@ import {z} from 'genkit';
 const EstimateCoinValueInputSchema = z.object({
   type: z.string().describe('The type of the coin.'),
   year: z.string().describe('The year the coin was minted.'),
-  condition: z.string().describe('The condition of the coin (e.g., Mint, Very Fine, Fine, Good, Poor).'),
 });
 export type EstimateCoinValueInput = z.infer<typeof EstimateCoinValueInputSchema>;
 
+const CoinDetailSchema = z.object({
+  description: z.string().describe('The detailed description of the coin variation.'),
+  estimatedValue: z.string().describe('The estimated value of the coin variation.'),
+});
+
 const EstimateCoinValueOutputSchema = z.object({
-  estimatedValue: z.string().describe('The estimated value of the coin.'),
-  confidence: z.string().describe('The confidence level of the estimated value (e.g., High, Medium, Low).'),
+  coins: z.array(CoinDetailSchema).describe('A list of coin variations and their estimated values.'),
+  confidence: z.string().describe('The confidence level of the estimated values (e.g., High, Medium, Low).'),
 });
 export type EstimateCoinValueOutput = z.infer<typeof EstimateCoinValueOutputSchema>;
 
@@ -34,13 +38,12 @@ const prompt = ai.definePrompt({
   output: {schema: EstimateCoinValueOutputSchema},
   prompt: `You are an expert numismatist specializing in estimating the value of coins.
 
-You will use this information to estimate the value of the coin.
+You will use this information to provide a list of coin variations and their estimated values.
 
 Coin Type: {{{type}}}
 Year: {{{year}}}
-Condition: {{{condition}}}
 
-Estimate the value of the coin and provide a confidence level for your estimate.
+List all coin variations for the given type and year, with their estimated values. Provide a confidence level for your estimates.
 `,
 });
 
