@@ -1,3 +1,4 @@
+
 {
   "placeholderImages": [
     {
@@ -5,6 +6,12 @@
       "description": "A collection of old, valuable coins spread out on a wooden table.",
       "imageUrl": "https://picsum.photos/seed/123/1200/800",
       "imageHint": "old coins"
+    },
+    {
+      "id": "feature",
+      "description": "Screenshots of a mobile app showing coin scanning and collection features.",
+      "imageUrl": "https://storage.googleapis.com/project-spark-b6b05.appspot.com/static/1723588973685-coin-app-feature.png",
+      "imageHint": "mobile app screenshot"
     }
   ]
 }
