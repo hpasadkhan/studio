@@ -6,6 +6,12 @@ import Link from 'next/link';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card, CardContent } from '@/components/ui/card';
 import { CheckCircle2 } from 'lucide-react';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
 
 export default function Home() {
   const heroImage = PlaceHolderImages.find((p) => p.id === 'hero');
@@ -32,6 +38,29 @@ export default function Home() {
     'Comprehensive Database: Access information on a vast range of US coins.',
     'User-Friendly Interface: Simply enter your coin type and year to get started.',
     'Free to Use: No hidden fees or subscriptions. Just pure numismatic knowledge.',
+  ];
+
+  const faqs = [
+    {
+      question: 'How accurate are the AI estimations?',
+      answer:
+        'Our AI uses a vast database of real-time market data and historical sales to provide highly accurate value estimations. However, for exceptionally rare or high-value coins, we always recommend a final appraisal by a certified numismatist.',
+    },
+    {
+      question: 'Is Coin Worth Checker free to use?',
+      answer:
+        'Yes! Our core features are completely free. We believe everyone should have access to information about their coin collections. We may introduce premium features in the future, but the coin value checker will remain free.',
+    },
+    {
+      question: 'What types of coins can I check?',
+      answer:
+        'Currently, our database is focused on United States coins, including pennies, nickels, dimes, quarters, half-dollars, and dollars. We are constantly expanding our database to include more coins from around the world.',
+    },
+    {
+      question: "Do I need to create an account to check my coin's value?",
+      answer:
+        'No account is necessary. You can start checking the value of your coins immediately. Just enter the coin type and year to get your free AI-powered estimation.',
+    },
   ];
 
   return (
@@ -80,7 +109,7 @@ export default function Home() {
                   src={featureImage.imageUrl}
                   data-ai-hint={featureImage.imageHint}
                   fill
-                  className="object-contain"
+                  className="object-cover"
                 />
               </div>
             )}
@@ -138,8 +167,33 @@ export default function Home() {
           </div>
         </div>
       </section>
+      
+      <section id="faq" className="w-full py-12 md:py-24 bg-primary/5">
+        <div className="container px-4 md:px-6">
+          <div className="flex flex-col items-center justify-center space-y-4 text-center">
+            <div className="space-y-2">
+              <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Frequently Asked Questions</h2>
+              <p className="max-w-[900px] text-foreground/80 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+                Have questions? We've got answers. Here are some of the most common questions we get.
+              </p>
+            </div>
+          </div>
+          <div className="mx-auto max-w-3xl mt-12">
+            <Accordion type="single" collapsible className="w-full">
+              {faqs.map((faq, index) => (
+                <AccordionItem key={index} value={`item-${index + 1}`}>
+                  <AccordionTrigger className="text-left">{faq.question}</AccordionTrigger>
+                  <AccordionContent className="text-left text-foreground/80">
+                    {faq.answer}
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          </div>
+        </div>
+      </section>
 
-      <section id="about" className="w-full py-12 md:py-24 bg-primary/5">
+      <section id="about" className="w-full py-12 md:py-24">
         <div className="container px-4 md:px-6">
           <div className="flex flex-col items-center justify-center space-y-4 text-center">
             <div className="space-y-2">
