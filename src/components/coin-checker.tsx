@@ -55,13 +55,13 @@ export function CoinChecker() {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const searchParams = useSearchParams();
-  const coinTypeFromQuery = searchParams.get('type') || '';
+  const coinTypeFromQuery = searchParams.get('type');
 
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      type: '',
+      type: coinTypeFromQuery || '',
       year: '',
     },
   });
