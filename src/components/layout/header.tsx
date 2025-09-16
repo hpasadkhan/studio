@@ -9,8 +9,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuLabel,
 } from '@/components/ui/dropdown-menu';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, Menu } from 'lucide-react';
 import React from 'react';
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+} from '@/components/ui/sheet';
+import { Button } from '../ui/button';
 
 const NavDropdown = ({
   label,
@@ -50,6 +56,8 @@ const NavDropdown = ({
 };
 
 export function Header() {
+  const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
+
   const coinTypes = {
     Penny: {
       baseType: 'Penny',
@@ -131,12 +139,47 @@ export function Header() {
               About
             </Link>
             <Link
-              href="mailto:hpasadkhan@gmail.com"
+              href="/contact"
               className="text-foreground/80 transition-colors hover:text-primary"
             >
               Contact
             </Link>
           </nav>
+          <div className="md:hidden">
+            <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon">
+                  <Menu />
+                  <span className="sr-only">Open Menu</span>
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="left">
+                <div className="flex flex-col gap-4 p-4">
+                  <Link href="/" className="flex items-center gap-2 mb-4" onClick={() => setMobileMenuOpen(false)}>
+                    <Logo className="h-8 w-8" />
+                    <span className="font-bold text-xl text-primary">
+                      Coin Worth Checker
+                    </span>
+                  </Link>
+                  <nav className="flex flex-col gap-4">
+                    {Object.entries(coinTypes).map(([label, { baseType, subItems }]) => (
+                      <div key={label} className="flex flex-col gap-2">
+                        <h3 className="font-semibold">{label}</h3>
+                        {subItems.map((item) => (
+                           <Link key={item.label} href={`/#checker?type=${encodeURIComponent(item.query)}`} className="text-foreground/80" onClick={() => setMobileMenuOpen(false)}>
+                             {item.label}
+                           </Link>
+                        ))}
+                         <Link href={`/#checker?type=${encodeURIComponent(baseType)}`} className="text-foreground/80" onClick={() => setMobileMenuOpen(false)}>Complete List</Link>
+                      </div>
+                    ))}
+                    <Link href="/#about" className="text-foreground/80" onClick={() => setMobileMenuOpen(false)}>About</Link>
+                    <Link href="/contact" className="text-foreground/80" onClick={() => setMobileMenuOpen(false)}>Contact</Link>
+                  </nav>
+                </div>
+              </SheetContent>
+            </Sheet>
+          </div>
         </div>
       </div>
     </header>

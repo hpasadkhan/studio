@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 export default function TermsPage() {
   return (
     <div className="container mx-auto px-4 py-8">
@@ -34,9 +36,9 @@ export default function TermsPage() {
         <h2 className="text-2xl font-semibold">5. Contact Us</h2>
         <p>
           If you have any questions about these Terms, please contact us at{' '}
-          <a href="mailto:hpasadkhan@gmail.com" className="text-primary hover:underline">
-            hpasadkhan@gmail.com
-          </a>
+          <Link href="/contact" className="text-primary hover:underline">
+            our contact page
+          </Link>
           .
         </p>
       </div>
