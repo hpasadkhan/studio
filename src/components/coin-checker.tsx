@@ -94,7 +94,7 @@ export function CoinChecker() {
 
   return (
     <>
-      <Card className="shadow-2xl bg-card/80 backdrop-blur-sm border-primary/20">
+      <Card className="shadow-2xl bg-card/90 backdrop-blur-sm border-primary/20 w-full">
         <CardHeader className="text-center pb-2">
           <CardTitle className="flex items-center justify-center gap-2 text-2xl font-bold">
             <Sparkles className="h-6 w-6 text-accent" />

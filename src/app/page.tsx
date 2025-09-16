@@ -8,6 +8,8 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
+import Image from 'next/image';
+import Link from 'next/link';
 
 export default function Home() {
   const testimonials = [
@@ -61,23 +63,67 @@ export default function Home() {
     <div className="flex-1">
       <section className="w-full py-20 md:py-28 lg:py-32 xl:py-40 bg-secondary/30">
         <div className="container px-4 md:px-6">
-          <div className="flex flex-col items-center justify-center space-y-6 text-center">
-            <div className="space-y-4">
-              <h1 className="text-4xl font-bold tracking-tighter text-primary sm:text-5xl md:text-6xl xl:text-7xl">
-                Got Coins? Find Their Worth.
-              </h1>
-              <p className="max-w-[700px] mx-auto text-foreground/80 md:text-xl">
-                Instantly discover the value of your coins with our free AI-powered checker. It's fast, easy, and accurate.
-              </p>
+          <div className="grid gap-6 lg:grid-cols-2 lg:gap-12 xl:gap-24 items-center">
+            <div className="flex flex-col justify-center space-y-4 text-left">
+              <div className="space-y-2">
+                <h1 className="text-4xl font-bold tracking-tighter text-primary sm:text-5xl md:text-6xl">
+                  Instantly Check Your Coin's Worth
+                </h1>
+                <p className="max-w-[600px] text-foreground/80 md:text-xl">
+                  Use our free, AI-powered tool to get an accurate estimate of your coin's value. Fast, simple, and reliable.
+                </p>
+              </div>
             </div>
-            <div id="checker" className="w-full max-w-2xl">
+            <div id="checker" className="w-full max-w-2xl mx-auto">
                  <CoinChecker />
             </div>
           </div>
         </div>
       </section>
 
-      <section id="features" className="w-full py-12 md:py-24">
+      <section className="w-full py-12 md:py-24 bg-background">
+        <div className="container px-4 md:px-6">
+          <div className="grid gap-10 sm:px-10 md:gap-16 md:grid-cols-2 items-center">
+            <div className="space-y-4">
+              <div className="inline-block rounded-lg bg-secondary px-3 py-1 text-sm text-secondary-foreground">
+                Mobile App
+              </div>
+              <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">Your Instant Coin Appraisal App</h2>
+              <p className="max-w-[600px] text-foreground/80 md:text-xl/relaxed">
+                All-in-one coin identifier and scanner for real-time price tracking, value appraisal, and market insights at your fingertips.
+              </p>
+              <div className="flex flex-col gap-2 min-[400px]:flex-row">
+                <Link
+                  href="#"
+                  className="inline-flex h-12 items-center justify-center rounded-md bg-foreground px-8 text-sm font-medium text-background shadow transition-colors hover:bg-foreground/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
+                  prefetch={false}
+                >
+                  <Image src="/apple-logo.svg" alt="App Store" width={140} height={40} className="dark:invert"/>
+                </Link>
+                <Link
+                  href="#"
+                  className="inline-flex h-12 items-center justify-center rounded-md bg-foreground px-8 text-sm font-medium text-background shadow transition-colors hover:bg-foreground/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
+                  prefetch={false}
+                >
+                   <Image src="/google-play.svg" alt="Google Play" width={140} height={40} className="dark:invert"/>
+                </Link>
+              </div>
+            </div>
+             <div className="flex justify-center">
+                <Image
+                  src="https://storage.googleapis.com/project-spark-308117-public/6686a34c9c7f46c6ab471457/7-12-2024/mobile-app-mockup.png"
+                  width={450}
+                  height={550}
+                  alt="Mobile App Mockup"
+                  className="rounded-xl "
+                  data-ai-hint="mobile app mockup"
+                />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="features" className="w-full py-12 md:py-24 bg-secondary/30">
         <div className="container px-4 md:px-6">
           <div className="flex flex-col items-center justify-center space-y-4 text-center mb-12">
             <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">Why Choose Us?</h2>
@@ -97,18 +143,20 @@ export default function Home() {
               </ul>
             </div>
             <div className="flex items-center justify-center">
-              <div className="grid grid-cols-2 gap-4">
-                  <div className="h-40 w-40 bg-muted rounded-lg shadow-md"></div>
-                  <div className="h-40 w-40 bg-muted rounded-lg shadow-md mt-4 ml-4"></div>
-                  <div className="h-40 w-40 bg-muted rounded-lg shadow-md -mt-4 -ml-4"></div>
-                  <div className="h-40 w-40 bg-muted rounded-lg shadow-md"></div>
-              </div>
+                 <Image
+                  src="https://picsum.photos/seed/feature-coin/500/500"
+                  width="500"
+                  height="500"
+                  alt="Coin Feature"
+                  data-ai-hint="old coin"
+                  className="rounded-xl shadow-xl"
+                />
             </div>
           </div>
         </div>
       </section>
       
-      <section id="testimonials" className="w-full py-12 md:py-24 bg-secondary/30">
+      <section id="testimonials" className="w-full py-12 md:py-24 bg-background">
         <div className="container px-4 md:px-6">
           <div className="flex flex-col items-center justify-center space-y-4 text-center">
             <div className="space-y-2">
@@ -120,7 +168,7 @@ export default function Home() {
           </div>
           <div className="mx-auto grid max-w-5xl items-start gap-8 sm:grid-cols-2 md:gap-12 lg:grid-cols-3 lg:gap-16 mt-12">
             {testimonials.map((testimonial, index) => (
-              <Card key={index} className="text-left bg-background">
+              <Card key={index} className="text-left bg-secondary/30">
                 <CardContent className="p-6">
                   <p className="mb-4 text-foreground/80">"{testimonial.text}"</p>
                   <div className="flex items-center gap-3">
@@ -137,7 +185,7 @@ export default function Home() {
         </div>
       </section>
       
-      <section id="faq" className="w-full py-12 md:py-24">
+      <section id="faq" className="w-full py-12 md:py-24 bg-secondary/30">
         <div className="container px-4 md:px-6">
           <div className="flex flex-col items-center justify-center space-y-4 text-center">
             <div className="space-y-2">
@@ -162,7 +210,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="about" className="w-full py-12 md:py-24 bg-secondary/30">
+      <section id="about" className="w-full py-12 md:py-24 bg-background">
         <div className="container px-4 md:px-6">
           <div className="flex flex-col items-center justify-center space-y-4 text-center">
             <div className="space-y-2">
