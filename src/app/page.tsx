@@ -1,8 +1,4 @@
-import Image from 'next/image';
 import { CoinChecker } from '@/components/coin-checker';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
-import { Button } from '@/components/ui/button';
-import Link from 'next/link';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card, CardContent } from '@/components/ui/card';
 import { CheckCircle2 } from 'lucide-react';
@@ -14,8 +10,6 @@ import {
 } from '@/components/ui/accordion';
 
 export default function Home() {
-  const heroImage = PlaceHolderImages.find((p) => p.id === 'hero');
-  const featureImage = PlaceHolderImages.find((p) => p.id === 'feature');
   const testimonials = [
     {
       name: 'John D.',
@@ -65,81 +59,56 @@ export default function Home() {
 
   return (
     <div className="flex-1">
-      <section className="w-full py-20 md:py-28 lg:py-32 xl:py-40">
+      <section className="w-full py-20 md:py-28 lg:py-32 xl:py-40 bg-secondary/30">
         <div className="container px-4 md:px-6">
-          <div className="grid gap-6 lg:grid-cols-2 lg:gap-16 items-center">
-            <div className="flex flex-col justify-center space-y-4">
-              <div className="space-y-4">
-                <h1 className="text-4xl font-bold tracking-tighter text-primary sm:text-5xl md:text-6xl xl:text-7xl">
-                  Got Coins? Find Their Worth.
-                </h1>
-                <p className="max-w-[600px] text-foreground/80 md:text-xl">
-                  Instantly discover the value of your coins with our free AI-powered checker. It's fast, easy, and accurate.
-                </p>
-              </div>
-              <div className="flex flex-col gap-2 min-[400px]:flex-row">
-                <Button asChild size="lg">
-                  <Link href="#checker">Start Checking</Link>
-                </Button>
-              </div>
+          <div className="flex flex-col items-center justify-center space-y-6 text-center">
+            <div className="space-y-4">
+              <h1 className="text-4xl font-bold tracking-tighter text-primary sm:text-5xl md:text-6xl xl:text-7xl">
+                Got Coins? Find Their Worth.
+              </h1>
+              <p className="max-w-[700px] mx-auto text-foreground/80 md:text-xl">
+                Instantly discover the value of your coins with our free AI-powered checker. It's fast, easy, and accurate.
+              </p>
             </div>
-            {heroImage && (
-              <div className="relative w-full h-80 rounded-xl overflow-hidden shadow-2xl shadow-primary/20">
-                <Image
-                  alt={heroImage.description}
-                  src={heroImage.imageUrl}
-                  data-ai-hint={heroImage.imageHint}
-                  fill
-                  priority
-                  className="object-cover"
-                />
-              </div>
-            )}
+            <div id="checker" className="w-full max-w-2xl">
+                 <CoinChecker />
+            </div>
           </div>
         </div>
       </section>
 
       <section id="features" className="w-full py-12 md:py-24">
         <div className="container px-4 md:px-6">
-          <div className="grid gap-10 lg:grid-cols-2 lg:gap-16 items-center">
-            {featureImage && (
-              <div className="relative w-full h-96 rounded-xl overflow-hidden shadow-2xl shadow-primary/10">
-                <Image
-                  alt={featureImage.description}
-                  src={featureImage.imageUrl}
-                  data-ai-hint={featureImage.imageHint}
-                  fill
-                  className="object-cover"
-                />
-              </div>
-            )}
-            <div className="flex flex-col justify-center space-y-6">
-              <div className="space-y-2">
-                <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">Why Choose Us?</h2>
-                <p className="max-w-[600px] text-foreground/80 md:text-xl/relaxed">
-                  Our platform provides everything you need to understand the value of your coin collection.
-                </p>
-              </div>
-              <ul className="grid gap-4">
+          <div className="flex flex-col items-center justify-center space-y-4 text-center mb-12">
+            <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">Why Choose Us?</h2>
+            <p className="max-w-[600px] text-foreground/80 md:text-xl/relaxed">
+              Our platform provides everything you need to understand the value of your coin collection.
+            </p>
+          </div>
+          <div className="mx-auto grid max-w-5xl items-center gap-6 lg:grid-cols-2 lg:gap-12">
+            <div className="flex flex-col justify-center space-y-4">
+              <ul className="grid gap-6">
                 {features.map((feature, index) => (
-                  <li key={index} className="flex items-start gap-3">
-                    <CheckCircle2 className="h-6 w-6 text-primary mt-1" />
-                    <p className="text-foreground/80 flex-1">{feature}</p>
+                  <li key={index} className="flex items-start gap-4">
+                    <CheckCircle2 className="h-6 w-6 text-accent mt-1 flex-shrink-0" />
+                    <p className="text-foreground/80">{feature}</p>
                   </li>
                 ))}
               </ul>
+            </div>
+            <div className="flex items-center justify-center">
+              <div className="grid grid-cols-2 gap-4">
+                  <div className="h-40 w-40 bg-muted rounded-lg shadow-md"></div>
+                  <div className="h-40 w-40 bg-muted rounded-lg shadow-md mt-4 ml-4"></div>
+                  <div className="h-40 w-40 bg-muted rounded-lg shadow-md -mt-4 -ml-4"></div>
+                  <div className="h-40 w-40 bg-muted rounded-lg shadow-md"></div>
+              </div>
             </div>
           </div>
         </div>
       </section>
       
-      <section id="checker" className="w-full py-12 md:py-24 bg-primary/5">
-        <div className="container px-4 md:px-6">
-          <CoinChecker />
-        </div>
-      </section>
-
-      <section id="testimonials" className="w-full py-12 md:py-24">
+      <section id="testimonials" className="w-full py-12 md:py-24 bg-secondary/30">
         <div className="container px-4 md:px-6">
           <div className="flex flex-col items-center justify-center space-y-4 text-center">
             <div className="space-y-2">
@@ -151,7 +120,7 @@ export default function Home() {
           </div>
           <div className="mx-auto grid max-w-5xl items-start gap-8 sm:grid-cols-2 md:gap-12 lg:grid-cols-3 lg:gap-16 mt-12">
             {testimonials.map((testimonial, index) => (
-              <Card key={index} className="text-left">
+              <Card key={index} className="text-left bg-background">
                 <CardContent className="p-6">
                   <p className="mb-4 text-foreground/80">"{testimonial.text}"</p>
                   <div className="flex items-center gap-3">
@@ -168,7 +137,7 @@ export default function Home() {
         </div>
       </section>
       
-      <section id="faq" className="w-full py-12 md:py-24 bg-primary/5">
+      <section id="faq" className="w-full py-12 md:py-24">
         <div className="container px-4 md:px-6">
           <div className="flex flex-col items-center justify-center space-y-4 text-center">
             <div className="space-y-2">
@@ -182,7 +151,7 @@ export default function Home() {
             <Accordion type="single" collapsible className="w-full">
               {faqs.map((faq, index) => (
                 <AccordionItem key={index} value={`item-${index + 1}`}>
-                  <AccordionTrigger className="text-left">{faq.question}</AccordionTrigger>
+                  <AccordionTrigger className="text-left text-lg">{faq.question}</AccordionTrigger>
                   <AccordionContent className="text-left text-foreground/80">
                     {faq.answer}
                   </AccordionContent>
@@ -193,7 +162,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="about" className="w-full py-12 md:py-24">
+      <section id="about" className="w-full py-12 md:py-24 bg-secondary/30">
         <div className="container px-4 md:px-6">
           <div className="flex flex-col items-center justify-center space-y-4 text-center">
             <div className="space-y-2">

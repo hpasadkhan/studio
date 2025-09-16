@@ -93,17 +93,13 @@ export function CoinChecker() {
   }
 
   return (
-    <div className="w-full max-w-2xl mx-auto">
-      <Card className="shadow-2xl shadow-primary/10">
-        <CardHeader className="text-center">
-          <CardTitle className="flex items-center justify-center gap-2 text-3xl font-bold">
-            <Sparkles className="h-8 w-8 text-accent" />
-            Check Your Coin's Value
+    <>
+      <Card className="shadow-2xl bg-card/80 backdrop-blur-sm border-primary/20">
+        <CardHeader className="text-center pb-2">
+          <CardTitle className="flex items-center justify-center gap-2 text-2xl font-bold">
+            <Sparkles className="h-6 w-6 text-accent" />
+            AI Coin Value Estimator
           </CardTitle>
-          <CardDescription>
-            Enter the details of your coin to get an AI-powered value
-            estimation. It&apos;s completely free!
-          </CardDescription>
         </CardHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -190,6 +186,6 @@ export function CoinChecker() {
           </CardContent>
         </Card>
       )}
-    </div>
+    </>
   );
 }
