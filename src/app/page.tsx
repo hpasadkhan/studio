@@ -1,16 +1,12 @@
 import { CoinChecker } from '@/components/coin-checker';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card, CardContent } from '@/components/ui/card';
-import { CheckCircle2 } from 'lucide-react';
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
-import Image from 'next/image';
-import Link from 'next/link';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 export default function Home() {
   const testimonials = [
@@ -29,12 +25,6 @@ export default function Home() {
       avatar: 'https://picsum.photos/seed/avatar3/40/40',
       text: "I was skeptical at first, but the accuracy is impressive. I use it to get quick estimates before getting a professional appraisal. It's saved me a lot of time.",
     },
-  ];
-  const features = [
-    'AI-Powered Estimates: Get instant, data-driven value estimations for your coins.',
-    'Comprehensive Database: Access information on a vast range of US coins.',
-    'User-Friendly Interface: Simply enter your coin type and year to get started.',
-    'Free to Use: No hidden fees or subscriptions. Just pure numismatic knowledge.',
   ];
 
   const faqs = [
@@ -60,8 +50,6 @@ export default function Home() {
     },
   ];
 
-  const featureImage = PlaceHolderImages.find(img => img.id === 'happyUsers');
-
 
   return (
     <div className="flex-1">
@@ -85,41 +73,6 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="features" className="w-full py-12 md:py-24 bg-secondary/30">
-        <div className="container px-4 md:px-6">
-          <div className="flex flex-col items-center justify-center space-y-4 text-center mb-12">
-            <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">Why Choose Us?</h2>
-            <p className="max-w-[600px] text-foreground/80 md:text-xl/relaxed">
-              Our platform provides everything you need to understand the value of your coin collection.
-            </p>
-          </div>
-          <div className="mx-auto grid max-w-5xl items-center gap-6 lg:grid-cols-2 lg:gap-12">
-            <div className="flex flex-col justify-center space-y-4">
-              <ul className="grid gap-6">
-                {features.map((feature, index) => (
-                  <li key={index} className="flex items-start gap-4">
-                    <CheckCircle2 className="h-6 w-6 text-accent mt-1 flex-shrink-0" />
-                    <p className="text-foreground/80">{feature}</p>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div className="flex items-center justify-center">
-                {featureImage && (
-                  <Image
-                    src={featureImage.imageUrl}
-                    width="500"
-                    height="500"
-                    alt={featureImage.description}
-                    data-ai-hint={featureImage.imageHint}
-                    className="rounded-xl shadow-xl"
-                  />
-                )}
-            </div>
-          </div>
-        </div>
-      </section>
-      
       <section id="testimonials" className="w-full py-12 md:py-24 bg-background">
         <div className="container px-4 md:px-6">
           <div className="flex flex-col items-center justify-center space-y-4 text-center">
