@@ -12,6 +12,12 @@
       "description": "A magnifying glass hovering over a rare, old coin, highlighting its intricate details.",
       "imageUrl": "https://picsum.photos/seed/feature-coin/500/500",
       "imageHint": "old coin"
+    },
+    {
+      "id": "happyUsers",
+      "description": "A diverse group of people happily engaged with a mobile application on their phones, showcasing user satisfaction.",
+      "imageUrl": "https://picsum.photos/seed/happy-users/500/500",
+      "imageHint": "happy users"
     }
   ]
 }

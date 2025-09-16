@@ -60,7 +60,7 @@ export default function Home() {
     },
   ];
 
-  const featureImage = PlaceHolderImages.find(img => img.id === 'feature');
+  const featureImage = PlaceHolderImages.find(img => img.id === 'happyUsers');
 
 
   return (
