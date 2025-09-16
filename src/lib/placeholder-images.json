@@ -10,8 +10,8 @@
     {
       "id": "feature",
       "description": "A magnifying glass hovering over a rare, old coin, highlighting its intricate details.",
-      "imageUrl": "https://picsum.photos/seed/456/1200/800",
-      "imageHint": "magnifying glass coin"
+      "imageUrl": "https://picsum.photos/seed/feature-coin/500/500",
+      "imageHint": "old coin"
     }
   ]
 }

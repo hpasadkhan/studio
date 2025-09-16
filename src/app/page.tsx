@@ -10,6 +10,7 @@ import {
 } from '@/components/ui/accordion';
 import Image from 'next/image';
 import Link from 'next/link';
+import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 export default function Home() {
   const testimonials = [
@@ -59,6 +60,9 @@ export default function Home() {
     },
   ];
 
+  const featureImage = PlaceHolderImages.find(img => img.id === 'feature');
+
+
   return (
     <div className="flex-1">
       <section className="w-full py-20 md:py-28 lg:py-32 xl:py-40 bg-secondary/30">
@@ -101,14 +105,16 @@ export default function Home() {
               </ul>
             </div>
             <div className="flex items-center justify-center">
-                 <Image
-                  src="https://picsum.photos/seed/feature-coin/500/500"
-                  width="500"
-                  height="500"
-                  alt="Coin Feature"
-                  data-ai-hint="old coin"
-                  className="rounded-xl shadow-xl"
-                />
+                {featureImage && (
+                  <Image
+                    src={featureImage.imageUrl}
+                    width="500"
+                    height="500"
+                    alt={featureImage.description}
+                    data-ai-hint={featureImage.imageHint}
+                    className="rounded-xl shadow-xl"
+                  />
+                )}
             </div>
           </div>
         </div>
