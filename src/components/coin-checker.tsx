@@ -55,22 +55,21 @@ export function CoinChecker() {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const searchParams = useSearchParams();
-  const coinTypeFromQuery = searchParams.get('type');
-
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      type: coinTypeFromQuery || '',
+      type: searchParams.get('type') || '',
       year: '',
     },
   });
 
   useEffect(() => {
+    const coinTypeFromQuery = searchParams.get('type');
     if (coinTypeFromQuery) {
       form.setValue('type', coinTypeFromQuery);
     }
-  }, [coinTypeFromQuery, form]);
+  }, [searchParams, form]);
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     setIsLoading(true);
