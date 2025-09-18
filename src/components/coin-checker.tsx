@@ -46,22 +46,36 @@ import Image from 'next/image';
 import { Separator } from './ui/separator';
 
 const FormSchema = z.object({
-  type: z
-    .string()
-    .min(2, { message: 'Please select a coin type.' }),
-  year: z
-    .string()
-    .refine(
-      (val) =>
-        !isNaN(parseInt(val, 10)) &&
-        parseInt(val, 10) > 1000 &&
-        parseInt(val, 10) <= new Date().getFullYear(),
-      {
-        message: 'Please enter a valid year.',
-      }
-    ),
+  type: z.string().optional(),
+  year: z.string().optional(),
   image: z.custom<File>().optional(),
+}).superRefine((data, ctx) => {
+  if (!data.image) {
+    if (!data.type || data.type.length < 2) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['type'],
+        message: 'Please select a coin type.',
+      });
+    }
+    if (!data.year || !/^\d{4}$/.test(data.year) || parseInt(data.year, 10) <= 1000 || parseInt(data.year, 10) > new Date().getFullYear()) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['year'],
+        message: 'Please enter a valid year.',
+      });
+    }
+  } else {
+     if (data.year && (!/^\d{4}$/.test(data.year) || parseInt(data.year, 10) <= 1000 || parseInt(data.year, 10) > new Date().getFullYear())) {
+        ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ['year'],
+            message: 'Please enter a valid year.',
+        });
+     }
+  }
 });
+
 
 function CoinCheckerForm({ coinTypeFromQuery }: { coinTypeFromQuery: string | null }) {
   const [result, setResult] = useState<EstimateCoinValueOutput | null>(null);
@@ -150,7 +164,7 @@ function CoinCheckerForm({ coinTypeFromQuery }: { coinTypeFromQuery: string | nu
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      form.setValue('image', file);
+      form.setValue('image', file, { shouldValidate: true });
       const reader = new FileReader();
       reader.onloadend = () => {
         setPreviewImage(reader.result as string);
@@ -160,7 +174,7 @@ function CoinCheckerForm({ coinTypeFromQuery }: { coinTypeFromQuery: string | nu
   };
   
   const clearImage = () => {
-    form.setValue('image', undefined);
+    form.setValue('image', undefined, { shouldValidate: true });
     setPreviewImage(null);
     if (fileInputRef.current) {
         fileInputRef.current.value = '';
@@ -179,7 +193,8 @@ function CoinCheckerForm({ coinTypeFromQuery }: { coinTypeFromQuery: string | nu
         reader.onload = async () => {
           const photoDataUri = reader.result as string;
           estimation = await estimateCoinValueByImage({
-            ...data,
+            type: data.type || '',
+            year: data.year || '',
             photoDataUri,
           } as EstimateCoinValueByImageInput);
           setResult(estimation);
@@ -189,7 +204,7 @@ function CoinCheckerForm({ coinTypeFromQuery }: { coinTypeFromQuery: string | nu
             throw error;
         }
       } else {
-         estimation = await estimateCoinValue({type: data.type, year: data.year});
+         estimation = await estimateCoinValue({type: data.type!, year: data.year!});
          setResult(estimation);
          setIsLoading(false);
       }
@@ -222,7 +237,7 @@ function CoinCheckerForm({ coinTypeFromQuery }: { coinTypeFromQuery: string | nu
                   name="type"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Coin Type</FormLabel>
+                      <FormLabel>Coin Type {form.getValues('image') ? '' : <span className="text-destructive">*</span>}</FormLabel>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                           <FormControl>
@@ -266,9 +281,9 @@ function CoinCheckerForm({ coinTypeFromQuery }: { coinTypeFromQuery: string | nu
                   name="year"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Year</FormLabel>
+                      <FormLabel>Year {form.getValues('image') ? '' : <span className="text-destructive">*</span>}</FormLabel>
                       <FormControl>
-                        <Input type="number" placeholder="e.g., 1909" {...field} />
+                        <Input type="number" placeholder="e.g., 1909" {...field} value={field.value ?? ''}/>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -422,3 +437,5 @@ export function CoinChecker() {
     </Suspense>
   )
 }
+
+    
