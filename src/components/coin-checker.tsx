@@ -60,17 +60,17 @@ export function CoinChecker() {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      type: coinTypeFromQuery || '',
+      type: '',
       year: '',
     },
   });
 
   useEffect(() => {
+    // This effect runs when coinTypeFromQuery changes.
+    // It ensures that the form's "type" field is updated
+    // whenever the user selects a coin from the header dropdown.
     if (coinTypeFromQuery) {
-      form.setValue('type', coinTypeFromQuery);
-    } else {
-      // Optional: Clear the field if the query param is removed
-      // form.setValue('type', '');
+      form.setValue('type', coinTypeFromQuery, { shouldValidate: true });
     }
   }, [coinTypeFromQuery, form]);
 
