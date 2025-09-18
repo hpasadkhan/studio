@@ -34,10 +34,6 @@ const EstimateCoinValueOutputSchema = z.object({
 });
 export type EstimateCoinValueOutput = z.infer<typeof EstimateCoinValueOutputSchema>;
 
-export async function estimateCoinValue(input: EstimateCoinValueInput): Promise<EstimateCoinValueOutput> {
-  return estimateCoinValueFlow(input);
-}
-
 const textPrompt = ai.definePrompt({
   name: 'estimateCoinValuePrompt',
   input: {schema: EstimateCoinValueInputSchema},
@@ -63,9 +59,9 @@ Provide a confidence level for your estimates (High, Medium, or Low) based on th
 `,
 });
 
-const estimateCoinValueFlow = ai.defineFlow(
+export const estimateCoinValue = ai.defineFlow(
   {
-    name: 'estimateCoinValueFlow',
+    name: 'estimateCoinValue',
     inputSchema: EstimateCoinValueInputSchema,
     outputSchema: EstimateCoinValueOutputSchema,
   },
