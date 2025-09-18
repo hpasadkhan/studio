@@ -63,7 +63,7 @@ export default function Home() {
                   Instantly Check Your Coin's Worth
                 </h1>
                 <p className="max-w-[600px] text-foreground/80 md:text-xl">
-                  Use our free, AI-powered tool to get an accurate estimate of your coin's value. Fast, simple, and reliable.
+                  Use our free, AI-powered tool to get an accurate estimate of your coin's value. <span className="text-primary">Fast, simple, and reliable.</span>
                 </p>
               </div>
             </div>
