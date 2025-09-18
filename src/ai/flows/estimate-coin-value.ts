@@ -20,6 +20,7 @@ export type EstimateCoinValueInput = z.infer<typeof EstimateCoinValueInputSchema
 const CoinDetailSchema = z.object({
   description: z.string().describe('The detailed description of the coin variation.'),
   estimatedValue: z.string().describe('The estimated value of the coin variation.'),
+  imageUrl: z.string().url().describe('A URL to a representative image of the coin variation. The image should be from a reliable source and accurately represent the coin.'),
 });
 
 const EstimateCoinValueOutputSchema = z.object({
@@ -38,12 +39,12 @@ const prompt = ai.definePrompt({
   output: {schema: EstimateCoinValueOutputSchema},
   prompt: `You are an expert numismatist specializing in estimating the value of coins.
 
-You will use this information to provide a list of coin variations and their estimated values.
+You will use this information to provide a list of coin variations, their estimated values, and a URL to an image for each variation.
 
 Coin Type: {{{type}}}
 Year: {{{year}}}
 
-List all coin variations for the given type and year, with their estimated values. Provide a confidence level for your estimates.
+List all coin variations for the given type and year, with their estimated values and a public image URL. Provide a confidence level for your estimates.
 `,
 });
 

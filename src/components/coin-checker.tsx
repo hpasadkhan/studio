@@ -32,6 +32,7 @@ import { Loader2, Sparkles } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useSearchParams } from 'next/navigation';
+import Image from 'next/image';
 
 const FormSchema = z.object({
   type: z
@@ -64,12 +65,15 @@ function CoinCheckerForm() {
       year: '',
     },
   });
-
+  
+  // This effect ensures the form updates when a new coin type is selected from the header dropdown.
   useEffect(() => {
-    if (coinTypeFromQuery) {
-      form.setValue('type', coinTypeFromQuery, { shouldValidate: true });
+    const type = searchParams.get('type');
+    if (type) {
+      form.setValue('type', type, { shouldValidate: true });
     }
-  }, [coinTypeFromQuery, form]);
+  }, [searchParams, form]);
+
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     setIsLoading(true);
@@ -169,6 +173,7 @@ function CoinCheckerForm() {
             <Table>
               <TableHeader>
                 <TableRow>
+                  <TableHead>Image</TableHead>
                   <TableHead>Description</TableHead>
                   <TableHead className="text-right">Estimated Value</TableHead>
                 </TableRow>
@@ -176,6 +181,15 @@ function CoinCheckerForm() {
               <TableBody>
                 {result.coins.map((coin, index) => (
                   <TableRow key={index}>
+                    <TableCell>
+                      <Image
+                        src={coin.imageUrl}
+                        alt={coin.description}
+                        width={64}
+                        height={64}
+                        className="rounded-full object-cover"
+                      />
+                    </TableCell>
                     <TableCell>{coin.description}</TableCell>
                     <TableCell className="text-right font-medium">{coin.estimatedValue}</TableCell>
                   </TableRow>
@@ -192,7 +206,7 @@ function CoinCheckerForm() {
 
 export function CoinChecker() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense>
       <CoinCheckerForm />
     </Suspense>
   )
