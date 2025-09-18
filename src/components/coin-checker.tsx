@@ -37,10 +37,11 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { ChevronDown, Loader2, Sparkles } from 'lucide-react';
+import { ChevronDown, Loader2, Sparkles, Scale, Ruler, Atom, History } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useSearchParams } from 'next/navigation';
 import Image from 'next/image';
+import { Separator } from './ui/separator';
 
 const FormSchema = z.object({
   type: z
@@ -260,34 +261,68 @@ function CoinCheckerForm({ coinTypeFromQuery }: { coinTypeFromQuery: string | nu
       )}
 
       {result && result.coins && (
-        <div className="mt-12 animate-fade-in-up">
-          <CardHeader className="text-center px-0">
+        <div className="mt-12 animate-fade-in-up space-y-8">
+          <CardHeader className="text-center px-0 pt-0">
             <CardTitle>Estimation Results</CardTitle>
             <CardDescription className="flex justify-center items-center gap-2">
                 Confidence: <span className="font-medium text-foreground">{result.confidence}</span>
             </CardDescription>
           </CardHeader>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+          
+          <div className="space-y-6">
             {result.coins.map((coin, index) => (
-              <Card key={index} className="flex flex-col overflow-hidden border-primary/20 hover:border-primary transition-all duration-300 transform hover:-translate-y-1 hover:shadow-2xl">
-                <CardContent className="p-0">
-                  <div className="relative w-full h-56">
-                    <Image
-                      src={coin.imageUrl}
-                      alt={coin.description}
-                      layout="fill"
-                      objectFit="cover"
-                      className="transition-transform duration-300 group-hover:scale-105"
-                    />
-                  </div>
-                  <div className="p-4">
-                     <h3 className="font-semibold text-lg text-foreground">{coin.description}</h3>
-                     <div className="mt-4">
-                       <p className="text-sm text-muted-foreground">Estimated Value</p>
-                       <p className="text-2xl font-bold text-primary">{coin.estimatedValue}</p>
-                     </div>
-                  </div>
-                </CardContent>
+              <Card key={index} className="overflow-hidden border-primary/20 hover:border-primary transition-all duration-300 transform hover:-translate-y-1 hover:shadow-2xl">
+                <div className="grid md:grid-cols-3 gap-6">
+                    <div className="relative md:col-span-1 h-56 md:h-full min-h-[200px]">
+                      <Image
+                        src={coin.imageUrl}
+                        alt={coin.description}
+                        layout="fill"
+                        objectFit="cover"
+                      />
+                    </div>
+                    <div className="md:col-span-2 p-6">
+                      <h3 className="font-bold text-2xl text-primary">{coin.description}</h3>
+                       <div className="mt-4">
+                         <p className="text-sm text-muted-foreground">Estimated Value</p>
+                         <p className="text-3xl font-bold text-foreground">{coin.estimatedValue}</p>
+                       </div>
+                       
+                       <Separator className="my-6" />
+
+                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-sm">
+                          <div className="flex items-start gap-3">
+                              <Atom className="h-5 w-5 mt-0.5 text-accent" />
+                              <div>
+                                <p className="font-semibold">Composition</p>
+                                <p className="text-muted-foreground">{coin.composition}</p>
+                              </div>
+                          </div>
+                           <div className="flex items-start gap-3">
+                              <Scale className="h-5 w-5 mt-0.5 text-accent" />
+                              <div>
+                                <p className="font-semibold">Weight</p>
+                                <p className="text-muted-foreground">{coin.weight}</p>
+                              </div>
+                          </div>
+                           <div className="flex items-start gap-3">
+                              <Ruler className="h-5 w-5 mt-0.5 text-accent" />
+                              <div>
+                                <p className="font-semibold">Diameter</p>
+                                <p className="text-muted-foreground">{coin.diameter}</p>
+                              </div>
+                          </div>
+                       </div>
+                       
+                       <div className="mt-6 flex items-start gap-3 text-sm">
+                           <History className="h-5 w-5 mt-0.5 text-accent" />
+                           <div>
+                             <p className="font-semibold">History</p>
+                             <p className="text-muted-foreground">{coin.history}</p>
+                           </div>
+                       </div>
+                    </div>
+                </div>
               </Card>
             ))}
           </div>
