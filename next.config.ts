@@ -39,6 +39,12 @@ const nextConfig: NextConfig = {
         hostname: 'www.pcgs.com',
         port: '',
         pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.usacoinbook.com',
+        port: '',
+        pathname: '/**',
       }
     ],
   },
