@@ -90,7 +90,7 @@ export default function Home() {
         <div className="container px-4 md:px-6">
           <div className="flex flex-col items-center justify-center space-y-4 text-center">
             <div className="space-y-2">
-              <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">What Our Users Say</h2>
+              <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-primary">What Our Users Say</h2>
               <p className="max-w-[900px] text-foreground/80 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
                 Hear from fellow collectors who have discovered the value of their coins with our tool.
               </p>
@@ -98,15 +98,22 @@ export default function Home() {
           </div>
           <div className="mx-auto grid max-w-5xl items-start gap-8 sm:grid-cols-2 md:gap-12 lg:grid-cols-3 lg:gap-16 mt-12">
             {testimonials.map((testimonial, index) => (
-              <Card key={index} className="text-left bg-secondary/30">
-                <CardContent className="p-6">
-                  <p className="mb-4 text-foreground/80">"{testimonial.text}"</p>
+              <Card key={index} className="text-left bg-card border-primary/20">
+                <CardContent className="p-6 space-y-4">
+                   <div className="flex items-center gap-1">
+                      <Star className="h-5 w-5 fill-accent text-accent" />
+                      <Star className="h-5 w-5 fill-accent text-accent" />
+                      <Star className="h-5 w-5 fill-accent text-accent" />
+                      <Star className="h-5 w-5 fill-accent text-accent" />
+                      <Star className="h-5 w-5 fill-accent text-accent" />
+                    </div>
+                  <p className="text-foreground/80">"{testimonial.text}"</p>
                   <div className="flex items-center gap-3">
                     <Avatar>
                       <AvatarImage src={testimonial.avatar} alt={testimonial.name} />
                       <AvatarFallback>{testimonial.name.charAt(0)}</AvatarFallback>
                     </Avatar>
-                    <p className="font-semibold">{testimonial.name}</p>
+                    <p className="font-semibold text-foreground">{testimonial.name}</p>
                   </div>
                 </CardContent>
               </Card>
