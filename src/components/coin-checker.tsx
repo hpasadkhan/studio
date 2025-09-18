@@ -1,14 +1,12 @@
 
 'use client';
 
-import { Suspense, useEffect, useState, useRef } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import {
   estimateCoinValue,
-  estimateCoinValueByImage,
-  type EstimateCoinValueByImageInput,
   type EstimateCoinValueOutput,
 } from '@/ai/flows/estimate-coin-value';
 
@@ -39,45 +37,20 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { ChevronDown, Loader2, Sparkles, Scale, Ruler, Atom, History, Upload, X } from 'lucide-react';
+import { ChevronDown, Loader2, Sparkles, Scale, Ruler, Atom, History } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import { Separator } from './ui/separator';
 
 const FormSchema = z.object({
-  type: z.string().optional(),
-  year: z.string().optional(),
-  image: z.custom<File>().optional(),
-}).superRefine((data, ctx) => {
-  // If there's an image, type and year are optional.
-  // The year still needs to be valid if it's provided.
-  if (data.image) {
-    if (data.year && (!/^\d{4}$/.test(data.year) || parseInt(data.year, 10) <= 1000 || parseInt(data.year, 10) > new Date().getFullYear())) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        path: ['year'],
-        message: 'Please enter a valid year.',
-      });
-    }
-    return;
-  }
-
-  // If there's no image, type and year are required.
-  if (!data.type || data.type.trim() === '') {
-    ctx.addIssue({
-      code: z.ZodIssueCode.custom,
-      path: ['type'],
-      message: 'Please select a coin type.',
-    });
-  }
-  if (!data.year || !/^\d{4}$/.test(data.year) || parseInt(data.year, 10) <= 1000 || parseInt(data.year, 10) > new Date().getFullYear()) {
-    ctx.addIssue({
-      code: z.ZodIssueCode.custom,
-      path: ['year'],
+  type: z.string({ required_error: 'Please select a coin type.' }).min(1, 'Please select a coin type.'),
+  year: z.string({ required_error: 'Please enter a valid year.' }).refine(
+    (year) => /^\d{4}$/.test(year) && parseInt(year, 10) > 1000 && parseInt(year, 10) <= new Date().getFullYear(),
+    {
       message: 'Please enter a valid year.',
-    });
-  }
+    }
+  ),
 });
 
 
@@ -85,15 +58,12 @@ function CoinCheckerForm({ coinTypeFromQuery }: { coinTypeFromQuery: string | nu
   const [result, setResult] = useState<EstimateCoinValueOutput | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const [previewImage, setPreviewImage] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
       type: coinTypeFromQuery || '',
       year: '',
-      image: undefined,
     },
   });
 
@@ -105,7 +75,6 @@ function CoinCheckerForm({ coinTypeFromQuery }: { coinTypeFromQuery: string | nu
 
 
   const selectedCoinType = form.watch('type');
-  const selectedImage = form.watch('image');
 
   const coinTypes = {
     Penny: {
@@ -165,63 +134,12 @@ function CoinCheckerForm({ coinTypeFromQuery }: { coinTypeFromQuery: string | nu
     },
   };
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      form.setValue('image', file, { shouldValidate: true });
-      // When an image is uploaded, trigger validation for other fields
-      form.trigger(['type', 'year']);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPreviewImage(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-  
-  const clearImage = () => {
-    form.setValue('image', undefined, { shouldValidate: true });
-    // When image is cleared, trigger validation for other fields
-    form.trigger(['type', 'year']);
-    setPreviewImage(null);
-    if (fileInputRef.current) {
-        fileInputRef.current.value = '';
-    }
-  }
-
-
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     setIsLoading(true);
     setResult(null);
     try {
-      let estimation: EstimateCoinValueOutput;
-      if (data.image) {
-        const reader = new FileReader();
-        reader.readAsDataURL(data.image);
-        reader.onload = async () => {
-          const photoDataUri = reader.result as string;
-          try {
-            const estimation = await estimateCoinValueByImage({
-              type: data.type || '',
-              year: data.year || '',
-              photoDataUri,
-            } as EstimateCoinValueByImageInput);
-            setResult(estimation);
-          } catch(e) {
-            throw e;
-          } finally {
-            setIsLoading(false);
-          }
-        };
-        reader.onerror = (error) => {
-            setIsLoading(false);
-            throw error;
-        }
-      } else {
-         estimation = await estimateCoinValue({type: data.type!, year: data.year!});
-         setResult(estimation);
-         setIsLoading(false);
-      }
+      const estimation = await estimateCoinValue({type: data.type, year: data.year});
+      setResult(estimation);
     } catch (error) {
       console.error(error);
       toast({
@@ -229,6 +147,7 @@ function CoinCheckerForm({ coinTypeFromQuery }: { coinTypeFromQuery: string | nu
         title: 'An error occurred',
         description: 'Failed to estimate coin value. Please try again.',
       });
+    } finally {
       setIsLoading(false);
     }
   }
@@ -251,7 +170,7 @@ function CoinCheckerForm({ coinTypeFromQuery }: { coinTypeFromQuery: string | nu
                   name="type"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Coin Type {!selectedImage && <span className="text-destructive">*</span>}</FormLabel>
+                      <FormLabel>Coin Type</FormLabel>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                           <FormControl>
@@ -295,43 +214,15 @@ function CoinCheckerForm({ coinTypeFromQuery }: { coinTypeFromQuery: string | nu
                   name="year"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Year {!selectedImage && <span className="text-destructive">*</span>}</FormLabel>
+                      <FormLabel>Year</FormLabel>
                       <FormControl>
-                        <Input type="number" placeholder="e.g., 1909" {...field} value={field.value ?? ''}/>
+                        <Input type="number" placeholder="e.g., 1909" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
               </div>
-
-               <div className="space-y-2">
-                <FormLabel>Or Upload an Image</FormLabel>
-                 {previewImage ? (
-                    <div className="relative group w-32 h-32">
-                        <Image src={previewImage} alt="Preview" layout="fill" objectFit="cover" className="rounded-md border-2 border-primary/50" />
-                        <Button variant="destructive" size="icon" className="absolute -top-2 -right-2 h-6 w-6 rounded-full opacity-0 group-hover:opacity-100 transition-opacity" onClick={clearImage}>
-                            <X className="h-4 w-4" />
-                        </Button>
-                    </div>
-                 ) : (
-                    <Button type="button" variant="outline" className="w-full" onClick={() => fileInputRef.current?.click()}>
-                        <Upload className="mr-2 h-4 w-4" />
-                        Upload Image
-                    </Button>
-                 )}
-                <FormControl>
-                    <Input 
-                        type="file" 
-                        className="hidden" 
-                        ref={fileInputRef} 
-                        onChange={handleFileChange}
-                        accept="image/png, image/jpeg, image/webp" 
-                    />
-                </FormControl>
-                <FormMessage />
-            </div>
-
             </CardContent>
             <CardFooter>
               <Button
@@ -451,5 +342,3 @@ export function CoinChecker() {
     </Suspense>
   )
 }
-
-    
