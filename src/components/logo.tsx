@@ -8,27 +8,38 @@ export function Logo(props: React.SVGProps<SVGSVGElement>) {
       xmlns="http://www.w3.org/2000/svg"
       {...props}
     >
-      <circle cx="20" cy="20" r="18" className="stroke-accent" strokeWidth="2.5" />
-      <path
-        d="M20 12V28"
-        className="stroke-primary"
+      {/* Coin */}
+      <circle cx="18" cy="22" r="12" fill="#D4AF37" />
+      <circle cx="18" cy="22" r="10" stroke="#0F4C81" strokeWidth="1.5" />
+      <text
+        x="18"
+        y="24"
+        fontFamily="Inter, sans-serif"
+        fontSize="8"
+        fill="#0F4C81"
+        textAnchor="middle"
+        fontWeight="bold"
+      >
+        $
+      </text>
+
+      {/* Magnifying Glass */}
+      <circle
+        cx="25"
+        cy="15"
+        r="8"
+        stroke="#0F4C81"
         strokeWidth="2.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
+        fill="rgba(255, 255, 255, 0.3)"
       />
-      <path
-        d="M14 15H26"
-        className="stroke-primary"
-        strokeWidth="2.5"
+      <line
+        x1="30.5"
+        y1="20.5"
+        x2="36"
+        y2="26"
+        stroke="#0F4C81"
+        strokeWidth="3"
         strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-       <path
-        d="M14 25H26"
-        className="stroke-primary"
-        strokeWidth="2.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
       />
     </svg>
   );
