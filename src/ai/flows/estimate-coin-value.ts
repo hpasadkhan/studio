@@ -37,14 +37,19 @@ const prompt = ai.definePrompt({
   name: 'estimateCoinValuePrompt',
   input: {schema: EstimateCoinValueInputSchema},
   output: {schema: EstimateCoinValueOutputSchema},
-  prompt: `You are an expert numismatist specializing in estimating the value of coins.
+  prompt: `You are an expert numismatist specializing in estimating the value of United States coins. Your task is to provide a concise and accurate list of coin variations based on the user's input.
 
 You will use this information to provide a list of coin variations, their estimated values, and a URL to an image for each variation.
 
 Coin Type: {{{type}}}
 Year: {{{year}}}
 
-List all coin variations for the given type and year, with their estimated values and a high-quality, publicly available image URL. Provide a confidence level for your estimates.
+List all known coin variations for the given type and year. For each variation, provide:
+1.  A clear and concise description (e.g., "1909-S VDB Lincoln Penny").
+2.  The estimated market value based on recent sales and auctions. Use a realistic price range (e.g., "$1,000 - $1,500").
+3.  A direct URL to a high-quality, publicly available image of the coin variation from a reputable numismatic source (e.g., PCGS, NGC, USA CoinBook, or Wikimedia Commons). Ensure the image accurately represents the specific coin variation.
+
+Provide a confidence level for your estimates (High, Medium, or Low) based on the available data for the specified coin.
 `,
 });
 
