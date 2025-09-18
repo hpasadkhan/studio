@@ -11,6 +11,7 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
+import { googleAI } from '@genkit-ai/googleai';
 
 const EstimateCoinValueInputSchema = z.object({
   type: z.string().describe('The type of the coin.'),
@@ -38,7 +39,7 @@ const textPrompt = ai.definePrompt({
   name: 'estimateCoinValuePrompt',
   input: {schema: EstimateCoinValueInputSchema},
   output: {schema: EstimateCoinValueOutputSchema},
-  model: 'gemini-1.5-flash-latest',
+  model: googleAI.model('gemini-1.5-flash-latest'),
   prompt: `You are an expert numismatist specializing in estimating the value of United States coins. Your task is to provide a detailed and accurate list of coin variations based on the user's input.
 
 You will use this information to provide a list of coin variations and their detailed specifications.
