@@ -39,7 +39,6 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { ChevronDown, Loader2, Sparkles } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 
@@ -73,7 +72,6 @@ function CoinCheckerForm({ coinTypeFromQuery }: { coinTypeFromQuery: string | nu
     },
   });
 
-  // By using the coinTypeFromQuery as a key, we force the component to re-render when the query param changes.
   useEffect(() => {
     if (coinTypeFromQuery) {
       form.setValue('type', coinTypeFromQuery, { shouldValidate: true });
@@ -90,6 +88,8 @@ function CoinCheckerForm({ coinTypeFromQuery }: { coinTypeFromQuery: string | nu
         { label: 'Indian Head Penny', query: 'Indian Head Penny' },
         { label: 'Flying Eagle Penny', query: 'Flying Eagle Penny' },
         { label: 'Large Cent', query: 'Large Cent' },
+        { label: 'Wartime Steel Penny', query: 'Wartime Steel Penny' },
+        { label: 'Draped Bust Penny', query: 'Draped Bust Penny' },
       ],
     },
     Nickel: {
@@ -98,6 +98,7 @@ function CoinCheckerForm({ coinTypeFromQuery }: { coinTypeFromQuery: string | nu
         { label: 'Buffalo Nickel', query: 'Buffalo Nickel' },
         { label: 'Liberty Head V Nickel', query: 'Liberty Head V Nickel' },
         { label: 'Shield Nickel', query: 'Shield Nickel' },
+        { label: 'Wartime Silver Nickel', query: 'Wartime Silver Nickel' },
       ],
     },
     Dime: {
@@ -106,6 +107,7 @@ function CoinCheckerForm({ coinTypeFromQuery }: { coinTypeFromQuery: string | nu
         { label: 'Mercury Dime', query: 'Mercury Dime' },
         { label: 'Barber Dime', query: 'Barber Dime' },
         { label: 'Seated Liberty Dime', query: 'Seated Liberty Dime' },
+        { label: 'Draped Bust Dime', query: 'Draped Bust Dime' },
       ],
     },
     Quarter: {
@@ -114,6 +116,7 @@ function CoinCheckerForm({ coinTypeFromQuery }: { coinTypeFromQuery: string | nu
         { label: 'Standing Liberty Quarter', query: 'Standing Liberty Quarter' },
         { label: 'Barber Quarter', query: 'Barber Quarter' },
         { label: 'Seated Liberty Quarter', query: 'Seated Liberty Quarter' },
+        { label: '50 State Quarters', query: '50 State Quarters' },
       ],
     },
     'Half Dollar': {
@@ -122,6 +125,7 @@ function CoinCheckerForm({ coinTypeFromQuery }: { coinTypeFromQuery: string | nu
         { label: 'Franklin Half Dollar', query: 'Franklin Half Dollar' },
         { label: 'Walking Liberty Half Dollar', query: 'Walking Liberty Half Dollar' },
         { label: 'Barber Half Dollar', query: 'Barber Half Dollar' },
+        { label: 'Seated Liberty Half Dollar', query: 'Seated Liberty Half Dollar' },
       ],
     },
     Dollar: {
@@ -130,6 +134,7 @@ function CoinCheckerForm({ coinTypeFromQuery }: { coinTypeFromQuery: string | nu
         { label: 'Peace Dollar', query: 'Peace Dollar' },
         { label: 'Morgan Dollar', query: 'Morgan Dollar' },
         { label: 'Trade Dollar', query: 'Trade Dollar' },
+        { label: 'Sacagawea Dollar', query: 'Sacagawea Dollar' },
       ],
     },
   };
@@ -249,52 +254,44 @@ function CoinCheckerForm({ coinTypeFromQuery }: { coinTypeFromQuery: string | nu
       </Card>
 
       {isLoading && (
-         <div className="flex justify-center items-center mt-8">
-            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+         <div className="flex justify-center items-center mt-12">
+            <Loader2 className="h-10 w-10 animate-spin text-primary" />
          </div>
       )}
 
       {result && result.coins && (
-        <Card className="mt-8 animate-fade-in-up">
-          <CardHeader>
-            <CardTitle>Estimation Result</CardTitle>
-            <CardDescription className="flex justify-between items-center">
-              <span>Here are the estimated values for the coins found.</span>
-              <div className="flex items-center gap-2">
-                <p className="text-sm text-muted-foreground">Confidence:</p>
-                <p className="text-sm font-medium">{result.confidence}</p>
-              </div>
+        <div className="mt-12 animate-fade-in-up">
+          <CardHeader className="text-center px-0">
+            <CardTitle>Estimation Results</CardTitle>
+            <CardDescription className="flex justify-center items-center gap-2">
+                Confidence: <span className="font-medium text-foreground">{result.confidence}</span>
             </CardDescription>
           </CardHeader>
-          <CardContent className="grid gap-4">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Image</TableHead>
-                  <TableHead>Description</TableHead>
-                  <TableHead className="text-right">Estimated Value</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {result.coins.map((coin, index) => (
-                  <TableRow key={index}>
-                    <TableCell>
-                      <Image
-                        src={coin.imageUrl}
-                        alt={coin.description}
-                        width={64}
-                        height={64}
-                        className="rounded-full object-cover"
-                      />
-                    </TableCell>
-                    <TableCell>{coin.description}</TableCell>
-                    <TableCell className="text-right font-medium">{coin.estimatedValue}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </CardContent>
-        </Card>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+            {result.coins.map((coin, index) => (
+              <Card key={index} className="flex flex-col overflow-hidden border-primary/20 hover:border-primary transition-all duration-300 transform hover:-translate-y-1 hover:shadow-2xl">
+                <CardContent className="p-0">
+                  <div className="relative w-full h-56">
+                    <Image
+                      src={coin.imageUrl}
+                      alt={coin.description}
+                      layout="fill"
+                      objectFit="cover"
+                      className="transition-transform duration-300 group-hover:scale-105"
+                    />
+                  </div>
+                  <div className="p-4">
+                     <h3 className="font-semibold text-lg text-foreground">{coin.description}</h3>
+                     <div className="mt-4">
+                       <p className="text-sm text-muted-foreground">Estimated Value</p>
+                       <p className="text-2xl font-bold text-primary">{coin.estimatedValue}</p>
+                     </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
       )}
     </>
   );
