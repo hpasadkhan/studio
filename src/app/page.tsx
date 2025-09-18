@@ -7,6 +7,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
+import { Star } from 'lucide-react';
 
 export default function Home() {
   const testimonials = [
@@ -68,6 +69,18 @@ export default function Home() {
             </div>
             <div id="checker" className="w-full max-w-2xl mx-auto">
                  <CoinChecker />
+                 <div className="mt-6 flex flex-col items-center justify-center gap-2 text-center">
+                    <div className="flex items-center gap-1">
+                      <Star className="h-5 w-5 fill-accent text-accent" />
+                      <Star className="h-5 w-5 fill-accent text-accent" />
+                      <Star className="h-5 w-5 fill-accent text-accent" />
+                      <Star className="h-5 w-5 fill-accent text-accent" />
+                      <Star className="h-5 w-5 fill-accent text-accent" />
+                    </div>
+                    <p className="text-sm text-foreground/80">
+                      Trusted by over <span className="font-semibold text-foreground">10,000+</span> collectors worldwide.
+                    </p>
+                  </div>
             </div>
           </div>
         </div>
