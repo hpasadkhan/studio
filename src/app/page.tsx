@@ -78,7 +78,7 @@ export default function Home() {
                       <Star className="h-5 w-5 fill-accent text-accent" />
                     </div>
                     <p className="text-sm text-foreground/80">
-                      Trusted by over <span className="font-semibold text-foreground">10,000+</span> collectors worldwide.
+                      Trusted by over <span className="font-semibold text-foreground">10 Million+</span> collectors worldwide.
                     </p>
                   </div>
             </div>
