@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -50,7 +50,7 @@ const FormSchema = z.object({
     ),
 });
 
-export function CoinChecker() {
+function CoinCheckerForm() {
   const [result, setResult] = useState<EstimateCoinValueOutput | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
@@ -60,15 +60,12 @@ export function CoinChecker() {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      type: '',
+      type: coinTypeFromQuery || '',
       year: '',
     },
   });
 
   useEffect(() => {
-    // This effect runs when coinTypeFromQuery changes.
-    // It ensures that the form's "type" field is updated
-    // whenever the user selects a coin from the header dropdown.
     if (coinTypeFromQuery) {
       form.setValue('type', coinTypeFromQuery, { shouldValidate: true });
     }
@@ -190,4 +187,13 @@ export function CoinChecker() {
       )}
     </>
   );
+}
+
+
+export function CoinChecker() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <CoinCheckerForm />
+    </Suspense>
+  )
 }
