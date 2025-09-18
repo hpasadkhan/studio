@@ -1,12 +1,14 @@
+
 'use client';
 
-import { Suspense, useEffect, useState } from 'react';
+import { Suspense, useEffect, useState, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import {
   estimateCoinValue,
-  type EstimateCoinValueInput,
+  estimateCoinValueByImage,
+  type EstimateCoinValueByImageInput,
   type EstimateCoinValueOutput,
 } from '@/ai/flows/estimate-coin-value';
 
@@ -37,7 +39,7 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { ChevronDown, Loader2, Sparkles, Scale, Ruler, Atom, History } from 'lucide-react';
+import { ChevronDown, Loader2, Sparkles, Scale, Ruler, Atom, History, Upload, X } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useSearchParams } from 'next/navigation';
 import Image from 'next/image';
@@ -58,18 +60,22 @@ const FormSchema = z.object({
         message: 'Please enter a valid year.',
       }
     ),
+  image: z.custom<File>().optional(),
 });
 
 function CoinCheckerForm({ coinTypeFromQuery }: { coinTypeFromQuery: string | null }) {
   const [result, setResult] = useState<EstimateCoinValueOutput | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
       type: coinTypeFromQuery || '',
       year: '',
+      image: undefined,
     },
   });
 
@@ -81,6 +87,7 @@ function CoinCheckerForm({ coinTypeFromQuery }: { coinTypeFromQuery: string | nu
 
 
   const selectedCoinType = form.watch('type');
+  const selectedImage = form.watch('image');
 
   const coinTypes = {
     Penny: {
@@ -140,15 +147,52 @@ function CoinCheckerForm({ coinTypeFromQuery }: { coinTypeFromQuery: string | nu
     },
   };
 
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      form.setValue('image', file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreviewImage(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+  
+  const clearImage = () => {
+    form.setValue('image', undefined);
+    setPreviewImage(null);
+    if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+    }
+  }
+
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     setIsLoading(true);
     setResult(null);
     try {
-      const estimation = await estimateCoinValue(
-        data as EstimateCoinValueInput
-      );
-      setResult(estimation);
+      let estimation: EstimateCoinValueOutput;
+      if (data.image) {
+        const reader = new FileReader();
+        reader.readAsDataURL(data.image);
+        reader.onload = async () => {
+          const photoDataUri = reader.result as string;
+          estimation = await estimateCoinValueByImage({
+            ...data,
+            photoDataUri,
+          } as EstimateCoinValueByImageInput);
+          setResult(estimation);
+          setIsLoading(false);
+        };
+        reader.onerror = (error) => {
+            throw error;
+        }
+      } else {
+         estimation = await estimateCoinValue({type: data.type, year: data.year});
+         setResult(estimation);
+         setIsLoading(false);
+      }
     } catch (error) {
       console.error(error);
       toast({
@@ -156,7 +200,6 @@ function CoinCheckerForm({ coinTypeFromQuery }: { coinTypeFromQuery: string | nu
         title: 'An error occurred',
         description: 'Failed to estimate coin value. Please try again.',
       });
-    } finally {
       setIsLoading(false);
     }
   }
@@ -232,6 +275,34 @@ function CoinCheckerForm({ coinTypeFromQuery }: { coinTypeFromQuery: string | nu
                   )}
                 />
               </div>
+
+               <div className="space-y-2">
+                <FormLabel>Or Upload an Image</FormLabel>
+                 {previewImage ? (
+                    <div className="relative group w-32 h-32">
+                        <Image src={previewImage} alt="Preview" layout="fill" objectFit="cover" className="rounded-md border-2 border-primary/50" />
+                        <Button variant="destructive" size="icon" className="absolute -top-2 -right-2 h-6 w-6 rounded-full opacity-0 group-hover:opacity-100 transition-opacity" onClick={clearImage}>
+                            <X className="h-4 w-4" />
+                        </Button>
+                    </div>
+                 ) : (
+                    <Button type="button" variant="outline" className="w-full" onClick={() => fileInputRef.current?.click()}>
+                        <Upload className="mr-2 h-4 w-4" />
+                        Upload Image
+                    </Button>
+                 )}
+                <FormControl>
+                    <Input 
+                        type="file" 
+                        className="hidden" 
+                        ref={fileInputRef} 
+                        onChange={handleFileChange}
+                        accept="image/png, image/jpeg, image/webp" 
+                    />
+                </FormControl>
+                <FormMessage />
+            </div>
+
             </CardContent>
             <CardFooter>
               <Button
@@ -277,7 +348,7 @@ function CoinCheckerForm({ coinTypeFromQuery }: { coinTypeFromQuery: string | nu
                       <Image
                         src={coin.imageUrl}
                         alt={coin.description}
-                        layout="fill"
+                        fill
                         objectFit="cover"
                       />
                     </div>
