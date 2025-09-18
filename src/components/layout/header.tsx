@@ -121,7 +121,7 @@ export function Header() {
         <div className="mr-4 flex items-center">
           <Link href="/" className="flex items-center gap-2 mr-6">
             <Logo className="h-8 w-8" />
-            <span className="hidden font-bold sm:inline-block text-2xl text-primary">
+            <span className="hidden font-bold sm:inline-block text-xl text-accent">
               Coin Worth Checker
             </span>
           </Link>
