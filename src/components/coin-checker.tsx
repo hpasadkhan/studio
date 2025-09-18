@@ -28,7 +28,16 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Loader2, Sparkles } from 'lucide-react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { ChevronDown, Loader2, Sparkles } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useSearchParams } from 'next/navigation';
@@ -37,7 +46,7 @@ import Image from 'next/image';
 const FormSchema = z.object({
   type: z
     .string()
-    .min(2, { message: 'Coin type must be at least 2 characters.' }),
+    .min(2, { message: 'Please select a coin type.' }),
   year: z
     .string()
     .refine(
@@ -63,6 +72,59 @@ function CoinCheckerForm({ coinTypeFromQuery }: { coinTypeFromQuery: string | nu
       year: '',
     },
   });
+
+  const selectedCoinType = form.watch('type');
+
+  const coinTypes = {
+    Penny: {
+      subItems: [
+        { label: 'Lincoln Penny', query: 'Lincoln Penny' },
+        { label: 'Indian Head Penny', query: 'Indian Head Penny' },
+        { label: 'Flying Eagle Penny', query: 'Flying Eagle Penny' },
+      ],
+    },
+    Nickel: {
+      subItems: [
+        { label: 'Jefferson Nickel', query: 'Jefferson Nickel' },
+        { label: 'Buffalo Nickel', query: 'Buffalo Nickel' },
+        { label: 'Liberty Head V Nickel', query: 'Liberty Head V Nickel' },
+      ],
+    },
+    Dime: {
+      subItems: [
+        { label: 'Roosevelt Dime', query: 'Roosevelt Dime' },
+        { label: 'Mercury Dime', query: 'Mercury Dime' },
+        { label: 'Barber Dime', query: 'Barber Dime' },
+      ],
+    },
+    Quarter: {
+      subItems: [
+        { label: 'Washington Quarter', query: 'Washington Quarter' },
+        { label: 'Standing Liberty Quarter', query: 'Standing Liberty Quarter' },
+        { label: 'Barber Quarter', query: 'Barber Quarter' },
+      ],
+    },
+    'Half Dollar': {
+      subItems: [
+        { label: 'Kennedy Half Dollar', query: 'Kennedy Half Dollar' },
+        { label: 'Franklin Half Dollar', query: 'Franklin Half Dollar' },
+        { label: 'Walking Liberty Half Dollar', query: 'Walking Liberty Half Dollar' },
+      ],
+    },
+    Dollar: {
+      subItems: [
+        { label: 'Eisenhower Dollar', query: 'Eisenhower Dollar' },
+        { label: 'Peace Dollar', query: 'Peace Dollar' },
+        { label: 'Morgan Dollar', query: 'Morgan Dollar' },
+      ],
+    },
+  };
+
+  useEffect(() => {
+    if (coinTypeFromQuery) {
+      form.setValue('type', coinTypeFromQuery, { shouldValidate: true });
+    }
+  }, [coinTypeFromQuery, form]);
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     setIsLoading(true);
@@ -103,9 +165,40 @@ function CoinCheckerForm({ coinTypeFromQuery }: { coinTypeFromQuery: string | nu
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Coin Type</FormLabel>
-                      <FormControl>
-                        <Input placeholder="e.g., Lincoln Penny" {...field} />
-                      </FormControl>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <FormControl>
+                            <Button
+                              variant="outline"
+                              className="w-full justify-between"
+                            >
+                              {selectedCoinType || "Select a coin type"}
+                              <ChevronDown className="ml-2 h-4 w-4 opacity-50" />
+                            </Button>
+                          </FormControl>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent className="w-56">
+                          {Object.entries(coinTypes).map(([label, { subItems }]) => (
+                            <DropdownMenuSub key={label}>
+                              <DropdownMenuSubTrigger>
+                                {label}
+                              </DropdownMenuSubTrigger>
+                              <DropdownMenuSubContent>
+                                {subItems.map((item) => (
+                                  <DropdownMenuItem
+                                    key={item.label}
+                                    onSelect={() => {
+                                      form.setValue('type', item.query, { shouldValidate: true });
+                                    }}
+                                  >
+                                    {item.label}
+                                  </DropdownMenuItem>
+                                ))}
+                              </DropdownMenuSubContent>
+                            </DropdownMenuSub>
+                          ))}
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -201,9 +294,8 @@ function CoinCheckerForm({ coinTypeFromQuery }: { coinTypeFromQuery: string | nu
 function CoinCheckerWithSuspense() {
   const searchParams = useSearchParams();
   const coinTypeFromQuery = searchParams.get('type');
-  // By using a key, we force React to re-mount the component when the query param changes.
-  // This ensures the form's default value is correctly updated.
-  return <CoinCheckerForm key={coinTypeFromQuery} coinTypeFromQuery={coinTypeFromQuery} />;
+  
+  return <CoinCheckerForm coinTypeFromQuery={coinTypeFromQuery} />;
 }
 
 
