@@ -50,29 +50,33 @@ const FormSchema = z.object({
   year: z.string().optional(),
   image: z.custom<File>().optional(),
 }).superRefine((data, ctx) => {
-  if (!data.image) {
-    if (!data.type || data.type.length < 2) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        path: ['type'],
-        message: 'Please select a coin type.',
-      });
-    }
-    if (!data.year || !/^\d{4}$/.test(data.year) || parseInt(data.year, 10) <= 1000 || parseInt(data.year, 10) > new Date().getFullYear()) {
+  // If there's an image, type and year are optional.
+  // The year still needs to be valid if it's provided.
+  if (data.image) {
+    if (data.year && (!/^\d{4}$/.test(data.year) || parseInt(data.year, 10) <= 1000 || parseInt(data.year, 10) > new Date().getFullYear())) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         path: ['year'],
         message: 'Please enter a valid year.',
       });
     }
-  } else {
-     if (data.year && (!/^\d{4}$/.test(data.year) || parseInt(data.year, 10) <= 1000 || parseInt(data.year, 10) > new Date().getFullYear())) {
-        ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            path: ['year'],
-            message: 'Please enter a valid year.',
-        });
-     }
+    return;
+  }
+
+  // If there's no image, type and year are required.
+  if (!data.type || data.type.trim() === '') {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ['type'],
+      message: 'Please select a coin type.',
+    });
+  }
+  if (!data.year || !/^\d{4}$/.test(data.year) || parseInt(data.year, 10) <= 1000 || parseInt(data.year, 10) > new Date().getFullYear()) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ['year'],
+      message: 'Please enter a valid year.',
+    });
   }
 });
 
@@ -165,6 +169,8 @@ function CoinCheckerForm({ coinTypeFromQuery }: { coinTypeFromQuery: string | nu
     const file = event.target.files?.[0];
     if (file) {
       form.setValue('image', file, { shouldValidate: true });
+      // When an image is uploaded, trigger validation for other fields
+      form.trigger(['type', 'year']);
       const reader = new FileReader();
       reader.onloadend = () => {
         setPreviewImage(reader.result as string);
@@ -175,6 +181,8 @@ function CoinCheckerForm({ coinTypeFromQuery }: { coinTypeFromQuery: string | nu
   
   const clearImage = () => {
     form.setValue('image', undefined, { shouldValidate: true });
+    // When image is cleared, trigger validation for other fields
+    form.trigger(['type', 'year']);
     setPreviewImage(null);
     if (fileInputRef.current) {
         fileInputRef.current.value = '';
@@ -192,15 +200,21 @@ function CoinCheckerForm({ coinTypeFromQuery }: { coinTypeFromQuery: string | nu
         reader.readAsDataURL(data.image);
         reader.onload = async () => {
           const photoDataUri = reader.result as string;
-          estimation = await estimateCoinValueByImage({
-            type: data.type || '',
-            year: data.year || '',
-            photoDataUri,
-          } as EstimateCoinValueByImageInput);
-          setResult(estimation);
-          setIsLoading(false);
+          try {
+            const estimation = await estimateCoinValueByImage({
+              type: data.type || '',
+              year: data.year || '',
+              photoDataUri,
+            } as EstimateCoinValueByImageInput);
+            setResult(estimation);
+          } catch(e) {
+            throw e;
+          } finally {
+            setIsLoading(false);
+          }
         };
         reader.onerror = (error) => {
+            setIsLoading(false);
             throw error;
         }
       } else {
@@ -237,7 +251,7 @@ function CoinCheckerForm({ coinTypeFromQuery }: { coinTypeFromQuery: string | nu
                   name="type"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Coin Type {form.getValues('image') ? '' : <span className="text-destructive">*</span>}</FormLabel>
+                      <FormLabel>Coin Type {!selectedImage && <span className="text-destructive">*</span>}</FormLabel>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                           <FormControl>
@@ -281,7 +295,7 @@ function CoinCheckerForm({ coinTypeFromQuery }: { coinTypeFromQuery: string | nu
                   name="year"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Year {form.getValues('image') ? '' : <span className="text-destructive">*</span>}</FormLabel>
+                      <FormLabel>Year {!selectedImage && <span className="text-destructive">*</span>}</FormLabel>
                       <FormControl>
                         <Input type="number" placeholder="e.g., 1909" {...field} value={field.value ?? ''}/>
                       </FormControl>
