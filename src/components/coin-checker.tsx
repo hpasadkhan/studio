@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, Suspense } from 'react';
+import { useState, useEffect, Suspense, use } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -51,12 +51,10 @@ const FormSchema = z.object({
     ),
 });
 
-function CoinCheckerForm() {
+function CoinCheckerForm({ coinTypeFromQuery }: { coinTypeFromQuery: string | null }) {
   const [result, setResult] = useState<EstimateCoinValueOutput | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
-  const searchParams = useSearchParams();
-  const coinTypeFromQuery = searchParams.get('type');
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -65,15 +63,6 @@ function CoinCheckerForm() {
       year: '',
     },
   });
-  
-  // This effect ensures the form updates when a new coin type is selected from the header dropdown.
-  useEffect(() => {
-    const type = searchParams.get('type');
-    if (type) {
-      form.setValue('type', type, { shouldValidate: true });
-    }
-  }, [searchParams, form]);
-
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     setIsLoading(true);
@@ -157,6 +146,12 @@ function CoinCheckerForm() {
         </Form>
       </Card>
 
+      {isLoading && (
+         <div className="flex justify-center items-center mt-8">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+         </div>
+      )}
+
       {result && result.coins && (
         <Card className="mt-8 animate-fade-in-up">
           <CardHeader>
@@ -203,11 +198,23 @@ function CoinCheckerForm() {
   );
 }
 
+function CoinCheckerWithSuspense() {
+  const searchParams = useSearchParams();
+  const coinTypeFromQuery = searchParams.get('type');
+  // By using a key, we force React to re-mount the component when the query param changes.
+  // This ensures the form's default value is correctly updated.
+  return <CoinCheckerForm key={coinTypeFromQuery} coinTypeFromQuery={coinTypeFromQuery} />;
+}
+
 
 export function CoinChecker() {
   return (
-    <Suspense>
-      <CoinCheckerForm />
+    <Suspense fallback={
+      <div className="flex justify-center items-center h-48">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    }>
+      <CoinCheckerWithSuspense />
     </Suspense>
   )
 }
