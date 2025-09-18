@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, Suspense, use } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -73,6 +73,14 @@ function CoinCheckerForm({ coinTypeFromQuery }: { coinTypeFromQuery: string | nu
     },
   });
 
+  // By using the coinTypeFromQuery as a key, we force the component to re-render when the query param changes.
+  useEffect(() => {
+    if (coinTypeFromQuery) {
+      form.setValue('type', coinTypeFromQuery, { shouldValidate: true });
+    }
+  }, [coinTypeFromQuery, form]);
+
+
   const selectedCoinType = form.watch('type');
 
   const coinTypes = {
@@ -81,6 +89,7 @@ function CoinCheckerForm({ coinTypeFromQuery }: { coinTypeFromQuery: string | nu
         { label: 'Lincoln Penny', query: 'Lincoln Penny' },
         { label: 'Indian Head Penny', query: 'Indian Head Penny' },
         { label: 'Flying Eagle Penny', query: 'Flying Eagle Penny' },
+        { label: 'Large Cent', query: 'Large Cent' },
       ],
     },
     Nickel: {
@@ -88,6 +97,7 @@ function CoinCheckerForm({ coinTypeFromQuery }: { coinTypeFromQuery: string | nu
         { label: 'Jefferson Nickel', query: 'Jefferson Nickel' },
         { label: 'Buffalo Nickel', query: 'Buffalo Nickel' },
         { label: 'Liberty Head V Nickel', query: 'Liberty Head V Nickel' },
+        { label: 'Shield Nickel', query: 'Shield Nickel' },
       ],
     },
     Dime: {
@@ -95,6 +105,7 @@ function CoinCheckerForm({ coinTypeFromQuery }: { coinTypeFromQuery: string | nu
         { label: 'Roosevelt Dime', query: 'Roosevelt Dime' },
         { label: 'Mercury Dime', query: 'Mercury Dime' },
         { label: 'Barber Dime', query: 'Barber Dime' },
+        { label: 'Seated Liberty Dime', query: 'Seated Liberty Dime' },
       ],
     },
     Quarter: {
@@ -102,6 +113,7 @@ function CoinCheckerForm({ coinTypeFromQuery }: { coinTypeFromQuery: string | nu
         { label: 'Washington Quarter', query: 'Washington Quarter' },
         { label: 'Standing Liberty Quarter', query: 'Standing Liberty Quarter' },
         { label: 'Barber Quarter', query: 'Barber Quarter' },
+        { label: 'Seated Liberty Quarter', query: 'Seated Liberty Quarter' },
       ],
     },
     'Half Dollar': {
@@ -109,6 +121,7 @@ function CoinCheckerForm({ coinTypeFromQuery }: { coinTypeFromQuery: string | nu
         { label: 'Kennedy Half Dollar', query: 'Kennedy Half Dollar' },
         { label: 'Franklin Half Dollar', query: 'Franklin Half Dollar' },
         { label: 'Walking Liberty Half Dollar', query: 'Walking Liberty Half Dollar' },
+        { label: 'Barber Half Dollar', query: 'Barber Half Dollar' },
       ],
     },
     Dollar: {
@@ -116,15 +129,11 @@ function CoinCheckerForm({ coinTypeFromQuery }: { coinTypeFromQuery: string | nu
         { label: 'Eisenhower Dollar', query: 'Eisenhower Dollar' },
         { label: 'Peace Dollar', query: 'Peace Dollar' },
         { label: 'Morgan Dollar', query: 'Morgan Dollar' },
+        { label: 'Trade Dollar', query: 'Trade Dollar' },
       ],
     },
   };
 
-  useEffect(() => {
-    if (coinTypeFromQuery) {
-      form.setValue('type', coinTypeFromQuery, { shouldValidate: true });
-    }
-  }, [coinTypeFromQuery, form]);
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     setIsLoading(true);
@@ -295,7 +304,7 @@ function CoinCheckerWithSuspense() {
   const searchParams = useSearchParams();
   const coinTypeFromQuery = searchParams.get('type');
   
-  return <CoinCheckerForm coinTypeFromQuery={coinTypeFromQuery} />;
+  return <CoinCheckerForm key={coinTypeFromQuery} coinTypeFromQuery={coinTypeFromQuery} />;
 }
 
 
