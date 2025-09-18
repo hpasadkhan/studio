@@ -57,6 +57,12 @@ const nextConfig: NextConfig = {
         hostname: 'www.usmint.gov',
         port: '',
         pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'en.numista.com',
+        port: '',
+        pathname: '/**',
       }
     ],
   },
