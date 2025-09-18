@@ -121,7 +121,7 @@ export function Header() {
         <div className="mr-4 flex items-center">
           <Link href="/" className="flex items-center gap-2 mr-6">
             <Logo className="h-8 w-8" />
-            <span className="hidden font-bold sm:inline-block text-xl text-primary">
+            <span className="hidden font-bold sm:inline-block text-xl text-accent" style={{ textShadow: '1px 1px 2px black' }}>
               Coin Worth Checker
             </span>
           </Link>
