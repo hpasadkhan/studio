@@ -41,7 +41,7 @@ export default function ContactPage() {
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     const subject = `Contact Form Inquiry from ${values.name}`;
-    const body = `Name: ${values.name}%0D%0AEmail: ${values.email}%0D%0A%0D%0AMessage:%0D%0A${values.message}`;
+    const body = `Name: ${values.name}\nEmail: ${values.email}\n\nMessage:\n${values.message}`;
     window.location.href = `mailto:hpasadkhan@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   }
 
